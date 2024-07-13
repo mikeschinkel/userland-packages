@@ -1,6 +1,6 @@
 <?php
 namespace UserlandPackages;
-use \UserlandPackages\PackageFS;
+
 const DS=DIRECTORY_SEPARATOR;
 function makePhar(string $pkgName, string $path):int {
 	$pharFile = $pkgName . '.tar';
@@ -38,11 +38,10 @@ function makePhar(string $pkgName, string $path):int {
 	// Stop buffering and write changes to the archive
 	$phar->stopBuffering();
 
-	$memHandle = PackageFS::createHandle();
-	PackageFS::write( $memHandle, file_get_contents( $pharFilepath ) );
+	$handle = fopen("/path/to/file",'r+');
+	$n = fwrite( $handle, file_get_contents( $pharFilepath ) );
 	unlink( $pharFilepath );
 	rmdir( $pharDir );
 
- 	Packages::addPackage(new Package($pkgName,$memHandle));
-	return $memHandle;
+ 	return $handle;
 }

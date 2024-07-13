@@ -20,13 +20,6 @@ class MemoryFile {
         return $handle;
     }
 
-	// getStreamUrl() gets the URL to use with fopen(), Phar(), etc.
-    public static function getStreamUrl(int $handle):string {
-		/** @noinspection PhpUnhandledExceptionInspection */
-		self::checkHandle($handle);
-		return "PackageFS://{$handle}";
-    }
-
 	// setValue() sets the value stored by handle in static memory
     public static function write(int $handle, string $value):void {
 		/** @noinspection PhpUnhandledExceptionInspection */
@@ -82,22 +75,6 @@ class MemoryFile {
 		return self::$mem;
 	}
 
-	// runExample() runs an example showing how to use static mem stream
-	public static function runExample():void{
-		require_once '../mustload/enable-packages.php';
-		$handle = MemoryFile::createHandle();
-		$fp = fopen(MemoryFile::getStreamUrl($handle), "r+");
-		fwrite($fp, "line1\n");
-		fwrite($fp, "line2\n");
-		fwrite($fp, "line3\n");
-		rewind($fp);
-		while (!feof($fp)) {
-			echo fgets($fp);
-		}
-		fclose($fp);
-		var_dump(MemoryFile::readAll($handle));
-		MemoryFile::closeHandle($handle);
-	}
 
 }
 
