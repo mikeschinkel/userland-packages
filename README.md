@@ -5,7 +5,34 @@
 _Userland Packages for PHP_ provide PHP developers with **working** code to group a collection of `.php` files located in a single-directory into a **_new_** concept of _"Package,"_ with full control of _**file- and package-level visibility**_ and no _build-time requirements_.
 
 ## How to Use
-The following is the code from our simple demo showing how to load:
+Here is the simplest example I can envision:
+
+### `./main.php`
+```php
+<?php
+require "../src/autoload.php";
+UserlandPackages::register();
+require "phpkg://my-pkg";
+echo hello(), ' ', world(), '!';
+```
+### `./my-pkg/hello.php`
+```php
+<?php
+function hello():string {
+   return 'Hello';
+}
+```
+### `./my-pkg/world.php`
+```php
+<?php
+function world():string {
+   return 'World';
+}
+```
+
+## `FileOnly` and `PackageOnly`
+
+The following is the code from our demo showing how to load:
 
 1. Two packages that **_both_** have _same-named_ classes `PackageOnly\A` and `PackageOnly\B`, and 
 2. A package — `english-pkg` — where _**both**_ files `A.php` and `B.php` have a _same-named_ class `FileOnly\C`.
