@@ -30,6 +30,12 @@ function world():string {
 }
 ```
 
+Running the above `main.php` of course prints out:
+
+```
+Hello World!
+```
+
 ## `FileOnly` and `PackageOnly`
 
 The following is the code from our demo showing how to load:
