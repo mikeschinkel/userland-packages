@@ -235,7 +235,7 @@ This repo exists to serve two (2) purposes. They are to:
 
 
 ## PHP Versions supported
-Userland Packages was developed using PHP `8.3.9` and thus supports PHP `8.3.x`, but probably also earlier `8.x` versions too. If you find features that are pre-`8.3.x` please let me know in the issues.
+Userland Packages was developed using PHP `8.3.9` and thus supports PHP `8.3.x`, but probably also earlier `8.x` versions too. If you find errors with using `8.0.x` through `8.2.x` please let me know in the issues.
 
 ## Use-Cases
 
