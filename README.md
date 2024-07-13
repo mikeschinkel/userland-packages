@@ -69,7 +69,7 @@ World World
 Bonjour le Monde
 ```
 
-### `./english-pkg/English.php` && `./english-pkg/French.php`
+### `./english-pkg/English.php` && `./french-pkg/French.php`
 Now compare the primary class file of each _package_ and notice they have almost idenitical code besides the one exported class for each:
 
 - `English` vs.
@@ -95,7 +95,7 @@ class English {
 	}
 }
 ```
-#### `./english-pkg/French.php`
+#### `./french-pkg/French.php`
 ```php
 <?php
 use PackageOnly\A;
@@ -120,7 +120,7 @@ _Above there is also the **arbitrary** change we made to method names `greeting(
 _In fact, we could have implemented a `Greatable` interface requiring a `greeting()` method had we wanted to._
 
 
-### `./english-pkg/A.php` && `./english-pkg/B.php`
+### `./english-pkg/{A,B}.php`
 Now let's look at the `A.php` and `B.php` file in the `english-pkg` package. Note how both define their own same-named and _non-conflicting_ class `C`. 
 
 Note the only difference between the two (2) files is what each file's `FileOnly\C->greeting()` outputs:
@@ -170,7 +170,7 @@ class C {
 }
 ```
 
-### `./french-pkg/A.php` && `./french-pkg/B.php`
+### `./french-pkg/{A,B}.php`
 
 Finally, we wrote the package `french-pkg` to be much simplier, just since we'd already shown all the necessary concepts. 
 
