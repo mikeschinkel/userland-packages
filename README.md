@@ -51,8 +51,8 @@ require "../src/autoload.php";
 UserlandPackages::register();
 
 // Next load your two packages
-require "phpkg://english-pkg/";
-require "phpkg://french-pkg/";
+require "phpkg://english-pkg";
+require "phpkg://french-pkg";
 
 // First load English and call its greeting
 $english = new English();
