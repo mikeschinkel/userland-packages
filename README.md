@@ -81,18 +81,18 @@ Now compare the primary class file of each _package_ and notice they have almost
 use PackageOnly\A;
 use PackageOnly\B;
 class English {
-	public A $b;
-	public B $c;
-	public function __construct() {
-		$this->b = new A();
-		$this->c = new B();
-	}
-	public function greeting():void {
-		$this->b->greeting();
-		echo ' ';
-		$this->c->greeting();
-		echo "\n";
-	}
+   public A $b;
+   public B $c;
+   public function __construct() {
+      $this->b = new A();
+      $this->c = new B();
+   }
+   public function greeting():void {
+      $this->b->greeting();
+      echo ' ';
+      $this->c->greeting();
+      echo "\n";
+   }
 }
 ```
 #### `./french-pkg/French.php`
@@ -101,18 +101,18 @@ class English {
 use PackageOnly\A;
 use PackageOnly\B;
 class French {
-	public A $b;
-	public B $c;
-	public function __construct() {
-		$this->b = new A();
-		$this->c = new B();
-	}
-	public function salutation():void {
-		$this->b->salutation();
-		echo ' ';
-		$this->c->salutation();
-		echo "\n";
-	}
+   public A $b;
+   public B $c;
+   public function __construct() {
+      $this->b = new A();
+      $this->c = new B();
+   }
+   public function salutation():void {
+      $this->b->salutation();
+      echo ' ';
+      $this->c->salutation();
+      echo "\n";
+   }
 }
 ```
 _Above there is also the **arbitrary** change we made to method names `greeting()` vs. `salutation()`. We did that do follow the spoken-language theme but not because we needed too. `greeting()` would have worked fine for both of them._ 
@@ -138,6 +138,7 @@ class A {
    public function greeting() {
       $this->c->greeting();
    }
+}
 namespace FileOnly;
 class C {
    public function greeting() {
@@ -180,11 +181,11 @@ The one remaining concept is for you to verify that we have indeed implemented u
 ```php
 <?php
 namespace PackageOnly {
-	class A {
-		public function salutation() {
-			echo "Bonjour";
-		}
-	}
+   class A {
+      public function salutation() {
+         echo "Bonjour";
+      }
+   }
 }
 ```
 ### `./french-pkg/B.php`
@@ -193,12 +194,11 @@ namespace PackageOnly {
 
 namespace PackageOnly;
 class B {
-	public function salutation() {
-		echo "le Monde";
-	}
+   public function salutation() {
+      echo "le Monde";
+   }
 }
 ```
-
 
 ## W.R.T. PHP Namespaces
 _Of important note:_ Userland Packages are **_(almost)_ _completely orthogonal_** to PHP namespaces. Userland Packages allow a PHP developer to use PHP Namespaces — _**or not**_ — and still be able to have  control of file- and package-level visibility that previously only namespaces provided. 
