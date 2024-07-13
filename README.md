@@ -257,9 +257,9 @@ Also, it is possible that Userland Packages will be able to solve the problem fo
   - Simplicity translates into runtime performance
 - Reduce Coupling and Enhance Cohesion:
   - The author believes:
-    - If code doesn't fit into one directory, it really too big to be a single package.
-    - The larger a package, the less cohesive the package becomes.
-    - As a package grows the amount of damaging inter-package coupling increases.
+    - The larger a package, the less cohesive the package becomes,
+    - As a package grows the amount of damaging inter-package coupling increases, and
+    - If code doesn't fit into one directory, it really is too big to be a single package.
    
 ## License
 
