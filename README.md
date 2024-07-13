@@ -10,7 +10,7 @@ Here is the simplest example I can envision:
 ### `./main.php`
 ```php
 <?php
-require "../src/autoload.php";
+require "/path/to/autoload.php";
 UserlandPackages::register();
 require "phpkg://my-pkg";
 echo hello(), ' ', world(), '!';
