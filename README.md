@@ -219,7 +219,7 @@ This repo exists to serve two (2) purposes. They are to:
 ## Goals and Non-Goals
 
 ## Goals
-- Create a highly-function implementation of single-directory packages
+- Create a highly-functional implementation of single-directory packages
 - Enable file-level and package-level scoping
 - Allow two or more classes, interfaces, enums and/or constants in a single .PHP file
 - Use native-feeling loading mechanisms like `require()`
