@@ -27,14 +27,12 @@ class FileStream {
 		$url = parse_url($path);
 		$this->handle = (int)($url["host"]??'0');
 		if (is_resource($this->handle)) {
-			/** @noinspection PhpUnhandledExceptionInspection */
 			throw new \Exception("Not a resource: {$this->handle}!");
 		}
 		$this->handle = PackageLoader::getHandle($this->handle);
 		$opened_path = (string)($url["path"]??'');
 		$opened_path = substr($opened_path,1);
 		if ($opened_path==='') {
-			/** @noinspection PhpUnhandledExceptionInspection */
 			throw new \Exception(sprintf('No filename specified for stream. Expected %s://{$handle}/{$filepath}',self::PROTOCOL));
 		}
 		$this->position = 0;
@@ -127,6 +125,9 @@ class FileStream {
 		return $result;
 	}
 
+	/**
+	 * @throws \Exception
+	 */
 	public static function register():void {
 		if (!stream_wrapper_register(self::PROTOCOL, self::class)) {
 			throw new \Exception(sprintf("Failed to register protocol %s://",self::PROTOCOL));

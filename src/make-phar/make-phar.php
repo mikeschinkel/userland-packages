@@ -2,20 +2,25 @@
 namespace UserlandPackages;
 
 const DS=DIRECTORY_SEPARATOR;
+
+/**
+ * @param string $pkgName
+ * @param string $path
+ *
+ * @return int
+ * @throws \Exception
+ */
 function makePhar(string $pkgName, string $path):int {
 	$pharFile = $pkgName . '.tar';
 	$pharDir = sprintf("%s%s%s",sys_get_temp_dir(), DS, uniqid('pkg-', true) );
 	if ( $pharDir === false ) {
-		/** @noinspection PhpUnhandledExceptionInspection */
 		throw new \Exception( "Failed to get temporary name." );
 	}
 	if (!mkdir( $pharDir )) {
-		/** @noinspection PhpUnhandledExceptionInspection */
 		throw new \Exception( "Failed to create temporary directory." );
 	}
 	$pharFilepath = $pharDir . DS . $pharFile;
 	// Create a new PHAR archive
-	/** @noinspection PhpClassConstantAccessedViaChildClassInspection */
 	$phar = new \PharData( $pharFilepath,
 		\Phar::CURRENT_AS_FILEINFO | \Phar::KEY_AS_FILENAME| \Phar::SKIP_DOTS | \Phar::UNIX_PATHS,
 		$pkgName,

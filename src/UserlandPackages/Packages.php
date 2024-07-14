@@ -11,9 +11,12 @@ class Packages {
 	public static function addPackage(Package $package): void {
 		self::$packages[$package->name] = &$package;
 	}
+
+	/**
+	 * @throws \Exception
+	 */
 	public static function getPackage(string $pkgName): Package {
 		if (!isset(self::$packages[$pkgName])) {
-			/** @noinspection PhpUnhandledExceptionInspection */
 			throw new \Exception("Package '{$pkgName}' not valid.");
 		}
 		return self::$packages[$pkgName];

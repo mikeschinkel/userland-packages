@@ -22,7 +22,7 @@ class FileParser {
 		$this->result = new ParseResult($package);
 	}
 	private function maybeConsume(int|string $tt):void {
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		$this->maybeCapture($tt);
 	}
 	private function tokenName(\PHPToken|string $tt=null):string {
@@ -38,7 +38,7 @@ class FileParser {
 		return \token_name($tt->id);
 	}
 	private function consumeOneOf(int|string ...$tt):void {
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		$this->captureOneOf(...$tt);
 	}
 	private function captureOneOf(int|string ...$tt):?string {
@@ -153,12 +153,12 @@ class FileParser {
 	 */
 	private function use(ParseResult $parse):int {
 		$this->consume(T_WHITESPACE);
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		$this->consumeOneOf(T_NAME_QUALIFIED, T_NAME_FULLY_QUALIFIED);
 		$ns = $this->token();
 		$concern = new Concern(T_USE, $this->token());
 		$this->maybeConsume(T_WHITESPACE);
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		$value = $this->captureOneOf(';',T_AS);
 		$parse->concerns[] = $concern;
 		if ($value===';') {
@@ -229,7 +229,6 @@ class FileParser {
 					if ($t->id < 255) {
 						continue 2;
 					}
-					/** @noinspection PhpUnhandledExceptionInspection */
 					throw new \Exception( "Unknown token: {$t}.");
 
 			}

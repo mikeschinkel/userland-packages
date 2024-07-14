@@ -17,6 +17,9 @@ class PackageLoader {
 	private static array $handles = [];
 	private string $pkgPath;
 
+	/**
+	 * @throws \Exception
+	 */
 	public function loadPackage( string $pkgName, string $root, Options $options = null ): string {
 		$filepath      = null;
 		$path          = Filepath::join( $root, $pkgName );
@@ -215,7 +218,7 @@ class PackageLoader {
 	 */
 	private function transformPhpFile( string $filepath,string $code,bool $stripOpenTag ): mixed {
 		$parser = new FileParser( $filepath, $this->package );
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		$parse    = $parser->parse( "<?php\n{$code}" );
 		$replacer = new Replacer( $filepath, $this->package );
 		$replacer->replace( $parse );
@@ -299,7 +302,7 @@ class PackageLoader {
 				$this->parseError($line,"mismatch in manifest and file header of %s of %s.",$filename,$pkgFilepath );
 			}
 			$code = fread($pkgHandle, $file->size);
-			/** @noinspection PhpUnhandledExceptionInspection */
+			
 			$handle = $this->transformPhpFile( $filepath, $code, false );
 			self::setHandle( $handle );
 			$this->loadPhpFile( $filepath, $handle );
@@ -331,12 +334,12 @@ class PackageLoader {
 	private function memWrite( string $code ): mixed {
 		$handle = fopen( 'php://memory', 'r+' );
 		if ( $handle === false ) {
-			/** @noinspection PhpUnhandledExceptionInspection */
+			
 			throw new \Exception("error opening php://memory for storing code");
 		}
 		$n = fwrite( $handle, $code );
 		if ( $n === false ) {
-			/** @noinspection PhpUnhandledExceptionInspection */
+			
 			throw new \Exception( "error writing to php://memory" );
 		}
 		rewind( $handle );
@@ -351,9 +354,9 @@ class PackageLoader {
 	 * @return string
 	 */
 	private function loadPhpkgPackage( string $pkgName, string $pkgPath, Options $options ): string {
-		$phpkg = file_get_contents(PackageType::PHPKG->getFilepath($pkgPath),false);
+		$phpkg = file_get_contents(PackageType::PHPKG->getFilepath( $pkgPath,$options ),false);
 		// TODO: Separate load out from parse.
-		return $this->parseAndLoadPhpkg($phpkg,$pkgPath);
+		return $this->parseAndLoadPhpkg($phpkg,$pkgPath,$options);
 	}
 
 	/**
@@ -364,10 +367,10 @@ class PackageLoader {
 	 * @return string
 	 */
 	private function loadPharPackage( string $pkgName, string $filepath, Options $options ): string {
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::PHAR->getFilepath( $path );
+		return PackgeType::PHAR->getFilepath( $path,$options );
 	}
 
 	/**
@@ -378,10 +381,10 @@ class PackageLoader {
 	 * @return string
 	 */
 	private function loadZipPackage( string $pkgName, string $filepath, Options $options ): string {
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::ZIP->getFilepath( $path );
+		return PackgeType::ZIP->getFilepath( $path,$options );
 	}
 
 	/**
@@ -394,10 +397,10 @@ class PackageLoader {
 	 * @throws \Exception
 	 */
 	private function loadTarPackage( string $pkgName, string $filepath, Options $options ): string {
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::TAR->getFilepath( $path );
+		return PackgeType::TAR->getFilepath( $path,$options );
 	}
 
 	/**
@@ -409,10 +412,10 @@ class PackageLoader {
 	 * @throws \Exception
 	 */
 	private function loadApcuPackage( string $pkgName, string $filepath, Options $options ): string {
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::ACPU->getFilepath( $path );
+		return PackgeType::ACPU->getFilepath( $path,$options );
 	}
 
 	/**
@@ -425,7 +428,7 @@ class PackageLoader {
 	 */
 	private function loadPhpPackage( string $pkgName, string $pkgPath ): string {
 		foreach ( $this->getPackageFilepaths( $pkgPath ) as $filepath ) {
-			/** @noinspection PhpUnhandledExceptionInspection */
+			
 			$code   = file_get_contents( $filepath, false );
 			$handle = $this->transformPhpFile( $filepath, $code, true );
 			self::setHandle( $handle );
