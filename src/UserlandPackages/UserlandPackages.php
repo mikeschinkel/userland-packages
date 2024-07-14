@@ -1,4 +1,4 @@
-<?php 
+<?php /** @noinspection PhpIllegalPsrClassPathInspection */
 
 declare( strict_types=1 );
 
@@ -26,7 +26,7 @@ namespace {
 			if ( self::$registered ) {
 				goto end;
 			}
-			require_once( Filepath::join( __DIR__, self::class, 'functions.php' ) );
+			require_once( Filepath::join( __DIR__, 'functions.php' ) );
 			Replacer::initialize();
 			PackageStream::register();
 			FileStream::register();

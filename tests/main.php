@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-include __DIR__ . '/../src/autoload.php';
+require __DIR__ . '/../src/UserlandPackages/Autoloader.php';
 
 UserlandPackages::setDefaultOptions(new \UserlandPackages\Options(
 	useTmpDir: false,
@@ -17,7 +17,7 @@ UserlandPackages::setDefaultOptions(new \UserlandPackages\Options(
 //$bar = new Bar();
 //echo $bar->prop."\n";
 
-include("phpkg://packages/my-package/");
+require("phpkg://packages/my-package/");
 
 $foo = new Foo();
 $foo->prop->hello();

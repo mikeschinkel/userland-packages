@@ -6,11 +6,11 @@ class Options {
 
 	public function __construct(
 		public ?object $packageType = null,
-		public bool $allowDiskWrite = false,
-		public bool $usePackageFile = false,
-		public bool $allowBackup = false,
-		public bool $allowPackageGen = false,
 		public bool $useTmpDir = true,
+		public bool $usePackageFile = false,
+		public bool $allowDiskWrite = false,
+		public bool $allowPackageGen = false,
+		public bool $allowBackup = false,
 		public string $alternateDir = '',
 		public ?int $retainBackupDays = null,
 		public array $typePriority = [

@@ -10,7 +10,7 @@ Here is the simplest example I can envision:
 ### `./main.php`
 ```php
 <?php
-require "/path/to/autoload.php";
+require "/path/to/UserlandPackages/Autoloader.php";
 UserlandPackages::register();
 require "phpkg://my-pkg";
 echo hello(), ' ', world(), '!';
@@ -47,7 +47,7 @@ The following is the code from our demo showing how to load:
 ```php
 <?php
 // First register the use of Userland Packages
-require "../src/autoload.php";
+require "../src/UserlandPackages/Autoloader.php";
 UserlandPackages::register();
 
 // Next load your two packages

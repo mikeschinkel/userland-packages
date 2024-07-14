@@ -1,0 +1,39 @@
+{
+	"name": "mikeschinkel/userland-packages",
+	"description": "Single directory 'Packages' for PHP with File-Only and Package-Only scope AND a Proof-of-Concept for a potential PHP RFC",
+	"type": "library",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Mike Schinkel",
+			"email": "mike@newclarity.net"
+		}
+	],
+	"require": {
+		"php": ">=8.3"
+	},
+	"autoload": {
+		"psr-4": {
+			"UserlandPackages\\": "src/UserlandPackages"
+		},
+		"files": [
+			"src/UserlandPackages/Autoloader.php"
+		]
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"UserlandPackages\\Tests\\": "tests/"
+		}
+	},
+	"scripts": {
+		"test": "phpunit"
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/mikeschinkel/userland-packages"
+		}
+	],
+	"minimum-stability": "dev",
+	"prefer-stable": true
+}
