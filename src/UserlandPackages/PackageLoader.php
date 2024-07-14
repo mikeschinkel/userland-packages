@@ -495,7 +495,7 @@ class PackageLoader {
 		
 		throw new \Exception( "implement me" );
 
-		return PackageType::ACPU->getFilepath( $this->pkgPath,$options );
+		return PackageType::APCU->getFilepath( $this->pkgPath,$options );
 	}
 
 	/**
