@@ -23,8 +23,8 @@ class PackageLoader {
 	 */
 	public function loadPackage( string $pkgName, string $root, Options $options = null ): string {
 		$filepath      = null;
-		$path          = Filepath::join( $root, $pkgName );
-		$this->package = new Package( $pkgName, $path );
+		$this->pkgPath = Filepath::join( $root, $pkgName );
+		$this->package = new Package( $pkgName, $this->pkgPath );
 		if ( is_null( $options ) ) {
 			$options = new Options();
 		}
@@ -32,27 +32,27 @@ class PackageLoader {
 			$pkgType = PackageType::PHP;
 		} else {
 			$pkgType = ! $options->hasPackageType()
-				? $this->selectPackageType( $path, $options )
+				? $this->selectPackageType( $options )
 				: $options->packageType;
-			if ($options->allowPackageGen && $this->packageNeedsRegeneration($pkgType,$path,$options)) {
+			if ($options->allowPackageGen && $this->packageNeedsRegeneration($pkgType,$options)) {
 				// We assume if a package was selected by priority rules and existence
 				// then we want to regenerate it rather than keep looking for other types
 				// of packages that may or may not exist
-				$this->removeAndBackupPackage($pkgType,$path,$options);
-				$this->generatePackage( $path, $options, $pkgType );
+				$this->removeAndBackupPackage($pkgType,$options);
+				$this->generatePackage( $options, $pkgType );
 			}
 		}
 		if ( $pkgType === PackageType::PHP && $options->allowPackageGen ) {
-			$pkgType = $this->generatePackage( $path, $options );
+			$pkgType = $this->generatePackage( $options );
 		}
 		
 		$filepath = match ( $pkgType ) {
-			PackageType::PHPKG => $this->loadPhpkgPackage( $pkgName, $path, $options ),
-			PackageType::PHAR  => $this->loadPharPackage( $pkgName, $path, $options ),
-			PackageType::ZIP   => $this->loadZipPackage( $pkgName, $path, $options ),
-			PackageType::TAR   => $this->loadTarPackage( $pkgName, $path, $options ),
-			PackageType::APCU  => $this->loadApcuPackage( $pkgName, $path, $options ),
-			PackageType::PHP   => $this->loadPhpPackage( $pkgName, $path ),
+			PackageType::PHPKG => $this->loadPhpkgPackage( $pkgName, $options ),
+			PackageType::PHAR  => $this->loadPharPackage( $pkgName, $options ),
+			PackageType::ZIP   => $this->loadZipPackage( $pkgName, $options ),
+			PackageType::TAR   => $this->loadTarPackage( $pkgName, $options ),
+			PackageType::APCU  => $this->loadApcuPackage( $pkgName, $options ),
+			PackageType::PHP   => $this->loadPhpPackage( $pkgName ),
 		};
 		end:
 		Packages::addPackage( $this->package );
@@ -72,15 +72,15 @@ class PackageLoader {
 	 *
 	 * @return bool
 	 */
-	public function packageNeedsRegeneration( PackageType $pkgType, string $pkgPath, Options $options ): bool {
+	public function packageNeedsRegeneration( PackageType $pkgType, Options $options ): bool {
 		$needsRegen = false;
 		switch ($pkgType) {
 			case PackageType::PHPKG:
 			case PackageType::PHAR:
 			case PackageType::ZIP:
 			case PackageType::TAR:
-				$modified   = filemtime( $pkgType->getFilepath( $pkgPath,$options ) );
-				foreach ( $this->getPackageFilepaths( $pkgPath ) as $filepath ) {
+				$modified   = filemtime( $pkgType->getFilepath( $this->pkgPath,$options ) );
+				foreach ( $this->getPackageFilepaths( $this->pkgPath ) as $filepath ) {
 					if ( $modified < filemtime( $filepath ) ) {
 						$needsRegen = true;
 						break;
@@ -101,12 +101,12 @@ class PackageLoader {
 	 *
 	 * @throws \Exception
 	 */
-	public function removeAndBackupPackage( PackageType $pkgType, string $pkgPath, Options $options ): void {
+	public function removeAndBackupPackage( PackageType $pkgType, Options $options ): void {
 		if ( !$options->allowBackup ) {
 			goto end;
 		}
 		$oldest = time() - ( Options::RETAIN_BACKUP_DAYS * 86400 ); // 30 days
-		$filepath   = $pkgType->getFilepath( $pkgPath,$options );
+		$filepath   = $pkgType->getFilepath( $this->pkgPath,$options );
 		foreach ( glob( "{$filepath}.*.bak" ) as $backupFile ) {
 			$timestamp = (int) substr( basename( $backupFile, '.bak' ), strlen( basename( $filepath) ) + 1 );
 			if ( $timestamp >= $oldest ) {
@@ -124,13 +124,12 @@ class PackageLoader {
 	}
 
 	/**
-	 * @param string $pkgPath
 	 * @param Options $options
 	 *
 	 * @return PackageType
 	 * @throws \Exception
 	 */
-	public function selectPackageType( string $pkgPath, Options $options ): PackageType {
+	public function selectPackageType( Options $options ): PackageType {
 		$pkgType = null;
 		if (!$options->usePackageFile) {
 			goto end;
@@ -146,7 +145,7 @@ class PackageLoader {
 				case PackageType::PHPKG:
 				case PackageType::ZIP:
 				case PackageType::TAR:
-					$filepath = $type->getFilepath( $pkgPath,$options );
+					$filepath = $type->getFilepath( $this->pkgPath,$options );
 					if ( ! file_exists( $filepath ) ) {
 						continue 2;
 					}
@@ -219,12 +218,12 @@ class PackageLoader {
 		return sprintf("%s%s%s\n",$package, self::PHPKG_CHECKSUM_PREFIX, sha1($package));
 	}
 
-	public function generatePackage( string $pkgPath, Options $options,$pkgType = null ): PackageType {
+	public function generatePackage( Options $options,$pkgType = null ): PackageType {
 		// Get the output path for the package being either in the temp dir,
 		// or in the package dir, depending on $options->useTmpDir setting.
 		$outPath = $options->useTmpDir
-			? Filepath::join( sys_get_temp_dir(), $pkgPath )
-			: $pkgPath;
+			? Filepath::join( sys_get_temp_dir(), $this->pkgPath )
+			: $this->pkgPath;
 
 		$pkgTypes = is_null($pkgType)
 			? $options->typePriority
@@ -236,7 +235,7 @@ class PackageLoader {
 			switch ( $type ) {
 			case PackageType::PHPKG:
 				if ( $options->allowDiskWrite ) {
-					$content = $this->generatePhpkgPackage( $pkgPath );
+					$content = $this->generatePhpkgPackage( $this->pkgPath );
 						file_put_contents( $type->getFilepath($outPath, $options), $content );
 						$pkgType = $type;
 						break 2;
@@ -256,7 +255,6 @@ class PackageLoader {
 
 		return $pkgType;
 	}
-
 
 	/**
 	 * @param int $handleNo
@@ -331,9 +329,10 @@ class PackageLoader {
 	 * @param string $phpkg
 	 *
 	 * @return string
+	 * @throws \Exception
 	 */
-	private function parseAndLoadPhpkg( string $phpkg, string $pkgPath, Options $options ): string {
-		$pkgFilepath = PackageType::PHPKG->getFilepath( $pkgPath,$options );
+	private function parseAndLoadPhpkg( string $phpkg, Options $options ): string {
+		$pkgFilepath = PackageType::PHPKG->getFilepath( $this->pkgPath,$options );
 		$line = 1;
 		$pkgHandle = $this->memWrite( $phpkg );
 		unset($phpkg);
@@ -362,7 +361,7 @@ class PackageLoader {
 		}
 		unset($manifest);
 		foreach($decodedManifest->files as $index => $filename ) {
-			$filepath = Filepath::join($pkgPath,$filename);
+			$filepath = Filepath::join($this->pkgPath,$filename);
 			$line++;
 			$file = fgets($pkgHandle);
 			if (!str_starts_with($file,self::PHPKG_FILE_PREFIX)) {
@@ -411,6 +410,7 @@ class PackageLoader {
 	 * @param string $code
 	 *
 	 * @return resource
+	 * @throws \Exception
 	 */
 	private function memWrite( string $code ): mixed {
 		$handle = fopen( 'php://memory', 'r+' );
@@ -434,10 +434,10 @@ class PackageLoader {
 	 *
 	 * @return string
 	 */
-	private function loadPhpkgPackage( string $pkgName, string $pkgPath, Options $options ): string {
-		$phpkg = file_get_contents(PackageType::PHPKG->getFilepath( $pkgPath,$options ),false);
+	private function loadPhpkgPackage( string $pkgName, Options $options ): string {
+		$phpkg = file_get_contents(PackageType::PHPKG->getFilepath( $this->pkgPath,$options ),false);
 		// TODO: Separate load out from parse.
-		return $this->parseAndLoadPhpkg($phpkg,$pkgPath,$options);
+		return $this->parseAndLoadPhpkg($phpkg,$options);
 	}
 
 	/**
@@ -447,11 +447,11 @@ class PackageLoader {
 	 *
 	 * @return string
 	 */
-	private function loadPharPackage( string $pkgName, string $filepath, Options $options ): string {
+	private function loadPharPackage( string $pkgName, Options $options ): string {
 		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::PHAR->getFilepath( $path,$options );
+		return PackgeType::PHAR->getFilepath( $this->pkgPath,$options );
 	}
 
 	/**
@@ -461,11 +461,11 @@ class PackageLoader {
 	 *
 	 * @return string
 	 */
-	private function loadZipPackage( string $pkgName, string $filepath, Options $options ): string {
+	private function loadZipPackage( string $pkgName, Options $options ): string {
 		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::ZIP->getFilepath( $path,$options );
+		return PackgeType::ZIP->getFilepath( $this->pkgPath,$options );
 	}
 
 	/**
@@ -477,11 +477,11 @@ class PackageLoader {
 	 *
 	 * @throws \Exception
 	 */
-	private function loadTarPackage( string $pkgName, string $filepath, Options $options ): string {
+	private function loadTarPackage( string $pkgName, Options $options ): string {
 		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::TAR->getFilepath( $path,$options );
+		return PackgeType::TAR->getFilepath( $this->pkgPath,$options );
 	}
 
 	/**
@@ -492,22 +492,21 @@ class PackageLoader {
 	 * @return string
 	 * @throws \Exception
 	 */
-	private function loadApcuPackage( string $pkgName, string $filepath, Options $options ): string {
+	private function loadApcuPackage( string $pkgName, Options $options ): string {
 		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::ACPU->getFilepath( $path,$options );
+		return PackgeType::ACPU->getFilepath( $this->pkgPath,$options );
 	}
 
 	/**
-	 * @param string $pkgName
 	 * @param string $pkgPath
 	 * @param Options $options
 	 *
 	 * @return string
 	 * @throws \Exception
 	 */
-	private function loadPhpPackage( string $pkgName, string $pkgPath ): string {
+	private function loadPhpPackage( string $pkgPath ): string {
 		foreach ( $this->getPackageFilepaths( $pkgPath ) as $filepath ) {
 			
 			$code   = file_get_contents( $filepath, false );
