@@ -9,6 +9,7 @@ UserlandPackages::setDefaultOptions(new \UserlandPackages\Options(
 	usePackageFile: true,
 	allowDiskWrite: true,
 	allowPackageGen: true,
+	allowBackup: true,
 ));
 
 //include("phpkg://packages/foo/bar/baz/");

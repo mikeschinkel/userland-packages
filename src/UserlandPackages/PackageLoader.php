@@ -15,6 +15,7 @@ class PackageLoader {
 	private PackageType $packageType;
 	private Package $package;
 	private static array $handles = [];
+	private static array $filepaths = [];
 	private string $pkgPath;
 
 	/**
@@ -31,14 +32,20 @@ class PackageLoader {
 			$pkgType = PackageType::PHP;
 		} else {
 			$pkgType = ! $options->hasPackageType()
-				? $this->selectPackageType( $options, $path )
+				? $this->selectPackageType( $path, $options )
 				: $options->packageType;
+			if ($options->allowPackageGen && $this->packageNeedsRegeneration($pkgType,$path,$options)) {
+				// We assume if a package was selected by priority rules and existence
+				// then we want to regenerate it rather than keep looking for other types
+				// of packages that may or may not exist
+				$this->removeAndBackupPackage($pkgType,$path,$options);
+				$this->generatePackage( $path, $options, $pkgType );
+			}
 		}
 		if ( $pkgType === PackageType::PHP && $options->allowPackageGen ) {
-			$pkgType = $this->generatePackage( $options, $path );
+			$pkgType = $this->generatePackage( $path, $options );
 		}
-
-		/** @noinspection PhpUnhandledExceptionInspection */
+		
 		$filepath = match ( $pkgType ) {
 			PackageType::PHPKG => $this->loadPhpkgPackage( $pkgName, $path, $options ),
 			PackageType::PHAR  => $this->loadPharPackage( $pkgName, $path, $options ),
@@ -55,13 +62,79 @@ class PackageLoader {
 	}
 
 	/**
+	 * Compares the modified time of the package file with the modified time for
+	 * all .PHP files in the package directory. If any .PHP file has a later
+	 * timestamp then it returns `true` meaning package regeneration is needed.
+	 *
 	 * @param Options $options
 	 * @param string $pkgPath
+	 * @param PackageType $pkgType
+	 *
+	 * @return bool
+	 */
+	public function packageNeedsRegeneration( PackageType $pkgType, string $pkgPath, Options $options ): bool {
+		$needsRegen = false;
+		switch ($pkgType) {
+			case PackageType::PHPKG:
+			case PackageType::PHAR:
+			case PackageType::ZIP:
+			case PackageType::TAR:
+				$modified   = filemtime( $pkgType->getFilepath( $pkgPath,$options ) );
+				foreach ( $this->getPackageFilepaths( $pkgPath ) as $filepath ) {
+					if ( $modified < filemtime( $filepath ) ) {
+						$needsRegen = true;
+						break;
+					}
+				}
+				break;
+			case PackageType::PHP:
+				// Nothing to do. Just here to full represent the enum.
+			case PackageType::APCU:
+				// TODO: Maybe later
+		}
+		return $needsRegen;
+	}
+
+	/**
+	 * Renames current package to a backup file w/ "${pkgPath}.{$timestamp}.bak" format.
+	 * Deletes packages older than Options::RETAIN_BACKUP_DAYS days old.
+	 *
+	 * @throws \Exception
+	 */
+	public function removeAndBackupPackage( PackageType $pkgType, string $pkgPath, Options $options ): void {
+		if ( !$options->allowBackup ) {
+			goto end;
+		}
+		$oldest = time() - ( Options::RETAIN_BACKUP_DAYS * 86400 ); // 30 days
+		$filepath   = $pkgType->getFilepath( $pkgPath,$options );
+		foreach ( glob( "{$filepath}.*.bak" ) as $backupFile ) {
+			$timestamp = (int) substr( basename( $backupFile, '.bak' ), strlen( basename( $filepath) ) + 1 );
+			if ( $timestamp >= $oldest ) {
+				continue;
+			}
+			if ( ! unlink( $backupFile ) ) {
+				throw new \Exception( "Unable to remove package file '{$backupFile}'." );
+			}
+		}
+		$backupFile = sprintf( "%s.%d.bak", $filepath, time() );
+		if ( ! rename( $filepath, $backupFile ) ) {
+			throw new \Exception( "Unable to rename package file '{$filepath}' to '{$backupFile}'." );
+		}
+	end:
+	}
+
+	/**
+	 * @param string $pkgPath
+	 * @param Options $options
 	 *
 	 * @return PackageType
+	 * @throws \Exception
 	 */
-	public function selectPackageType( Options $options, string $pkgPath ): PackageType {
+	public function selectPackageType( string $pkgPath, Options $options ): PackageType {
 		$pkgType = null;
+		if (!$options->usePackageFile) {
+			goto end;
+		}
 		foreach ( $options->typePriority as $type ) {
 			switch ( $type ) {
 				case PackageType::PHP:
@@ -73,22 +146,26 @@ class PackageLoader {
 				case PackageType::PHPKG:
 				case PackageType::ZIP:
 				case PackageType::TAR:
-					$filepath = $type->getFilepath( $pkgPath );
-					if ( file_exists( $filepath ) ) {
-						$pkgType = $type;
-						break 2;
+					$filepath = $type->getFilepath( $pkgPath,$options );
+					if ( ! file_exists( $filepath ) ) {
+						continue 2;
 					}
+					$pkgType = $type;
+					break 2;
 			}
 		}
+	end:
 		if ( is_null( $pkgType ) ) {
 			$pkgType = PackageType::PHP;
 		}
-
 		return $pkgType;
 	}
 
 	public function getPackageFilepaths( string $pkgPath ): array {
-		return glob( "{$pkgPath}/*.php" );
+		if (!isset( self::$filepaths[ $pkgPath ] ) ) {
+			self::$filepaths[ $pkgPath ] = glob( "{$pkgPath}/*.php" );
+		}
+		return self::$filepaths[ $pkgPath ];
 	}
 
 	public function loadPackageFiles( string $pkgPath ): array {
@@ -142,32 +219,36 @@ class PackageLoader {
 		return sprintf("%s%s%s\n",$package, self::PHPKG_CHECKSUM_PREFIX, sha1($package));
 	}
 
-	public function generatePackage( Options $options, string $pkgPath ): PackageType {
-		$pkgType = null;
+	public function generatePackage( string $pkgPath, Options $options,$pkgType = null ): PackageType {
 		// Get the output path for the package being either in the temp dir,
 		// or in the package dir, depending on $options->useTmpDir setting.
 		$outPath = $options->useTmpDir
 			? Filepath::join( sys_get_temp_dir(), $pkgPath )
 			: $pkgPath;
 
+		$pkgTypes = is_null($pkgType)
+			? $options->typePriority
+			: [$pkgType];
+
 		// Now loop through in package type priority order to see which
 		// type we can create a package for.
-		foreach ( $options->typePriority as $type ) {
+		foreach ( $pkgTypes as $type ) {
 			switch ( $type ) {
-				case PackageType::PHPKG:
-					if ( $options->allowDiskWrite ) {
-						$content = $this->generatePhpkgPackage( $pkgPath );
-						file_put_contents( $type->getFilepath($outPath), $content );
+			case PackageType::PHPKG:
+				if ( $options->allowDiskWrite ) {
+					$content = $this->generatePhpkgPackage( $pkgPath );
+						file_put_contents( $type->getFilepath($outPath, $options), $content );
 						$pkgType = $type;
 						break 2;
-					}
-				case PackageType::APCU:
-				case PackageType::PHAR:
-				case PackageType::ZIP:
-				case PackageType::TAR:
-				case PackageType::PHP:
-					// Do nothing, just here for coverage
-			}
+				}
+				break;
+			case PackageType::APCU:
+			case PackageType::PHAR:
+			case PackageType::ZIP:
+			case PackageType::TAR:
+			case PackageType::PHP:
+				// Do nothing, just here for coverage
+		}
 		}
 		if ( is_null( $pkgType ) ) {
 			$pkgType = PackageType::PHP;
@@ -251,8 +332,8 @@ class PackageLoader {
 	 *
 	 * @return string
 	 */
-	private function parseAndLoadPhpkg( string $phpkg, string $pkgPath ): string {
-		$pkgFilepath = PackageType::PHPKG->getFilepath($pkgPath);
+	private function parseAndLoadPhpkg( string $phpkg, string $pkgPath, Options $options ): string {
+		$pkgFilepath = PackageType::PHPKG->getFilepath( $pkgPath,$options );
 		$line = 1;
 		$pkgHandle = $this->memWrite( $phpkg );
 		unset($phpkg);

@@ -23,11 +23,12 @@ enum PackageType:string {
 
 	/**
 	 * @param string $path
+	 * @param Options $options
 	 * @param string $ext
 	 *
 	 * @return string
 	 */
-	public function getFilepath(string $path):string {
+	public function getFilepath( string $path, Options $options ):string {
 		return Filepath::join($path,sprintf("%s.%s",basename($path),$this->value));
 	}
 
