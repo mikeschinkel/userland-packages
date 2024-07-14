@@ -450,7 +450,7 @@ class PackageLoader {
 		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::PHAR->getFilepath( $this->pkgPath,$options );
+		return PackageType::PHAR->getFilepath( $this->pkgPath,$options );
 	}
 
 	/**
@@ -464,7 +464,7 @@ class PackageLoader {
 		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::ZIP->getFilepath( $this->pkgPath,$options );
+		return PackageType::ZIP->getFilepath( $this->pkgPath,$options );
 	}
 
 	/**
@@ -480,7 +480,7 @@ class PackageLoader {
 		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::TAR->getFilepath( $this->pkgPath,$options );
+		return PackageType::TAR->getFilepath( $this->pkgPath,$options );
 	}
 
 	/**
@@ -495,7 +495,7 @@ class PackageLoader {
 		
 		throw new \Exception( "implement me" );
 
-		return PackgeType::ACPU->getFilepath( $this->pkgPath,$options );
+		return PackageType::ACPU->getFilepath( $this->pkgPath,$options );
 	}
 
 	/**
