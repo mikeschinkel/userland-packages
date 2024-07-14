@@ -1,5 +1,5 @@
 <?php
-require "../src/UserlandPackages/Autoloader.php";
+require "vendor/autoload.php";
 UserlandPackages::register();
 
 require "phpkg://english-pkg";

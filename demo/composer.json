@@ -1,0 +1,21 @@
+{
+	"name": "userland-packages/demo",
+	"description": "Demonstrate Userland Packages for PHP",
+	"type": "project",
+	"license": "MIT",
+	"authors": [
+		{
+			"name": "Mike Schinkel",
+			"email": "mike@newclarity.net"
+		}
+	],
+	"require": {
+		"mikeschinkel/userland-packages": "dev-main"
+	},
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/mikeschinkel/userland-packages"
+		}
+	]
+}

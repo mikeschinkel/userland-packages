@@ -1,0 +1,74 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "4572554a4596d6f7e51399b85b6545b1",
+    "packages": [
+        {
+            "name": "mikeschinkel/userland-packages",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mikeschinkel/userland-packages.git",
+                "reference": "ac8ff03afb7f7777344803a08f4aaf195d3b8b2b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mikeschinkel/userland-packages/zipball/ac8ff03afb7f7777344803a08f4aaf195d3b8b2b",
+                "reference": "ac8ff03afb7f7777344803a08f4aaf195d3b8b2b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.3"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "UserlandPackages\\": "src/UserlandPackages"
+                },
+                "files": [
+                    "src/UserlandPackages/Autoloader.php"
+                ]
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "UserlandPackages\\Tests\\": "tests/"
+                }
+            },
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mike Schinkel",
+                    "email": "mike@newclarity.net"
+                }
+            ],
+            "description": "Single directory 'Packages' for PHP with File-Only and Package-Only scope AND a Proof-of-Concept for a potential PHP RFC",
+            "support": {
+                "source": "https://github.com/mikeschinkel/userland-packages/tree/composer",
+                "issues": "https://github.com/mikeschinkel/userland-packages/issues"
+            },
+            "time": "2024-07-14T13:39:32+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "mikeschinkel/userland-packages": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": [],
+    "plugin-api-version": "2.6.0"
+}
