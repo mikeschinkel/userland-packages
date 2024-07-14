@@ -12,7 +12,7 @@ class FileParser {
 	const string PACKAGE_ONLY= 'PackageOnly';
 
 	private int $pos = 0;
-	private string $current_ns = '';
+	//private string $current_ns = '';
 	private ParseResult $result;
 
 	public function __construct(
@@ -138,7 +138,7 @@ class FileParser {
 				$printErrorFunc($t,self::PACKAGE_ONLY);
 			}
 		}
-		$this->current_ns = $t->text;
+		//$this->current_ns = $t->text;
 
 		$parse->concerns[] = new Concern(T_NAMESPACE, $this->token());
 		$this->maybeConsume(T_WHITESPACE);

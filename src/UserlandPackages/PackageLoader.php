@@ -3,7 +3,7 @@ declare( strict_types=1 );
 
 namespace UserlandPackages;
 
-use JetBrains\PhpStorm\NoReturn;
+use \UserlandPackages\PackageType;
 
 class PackageLoader {
 	const string PHPKG_PREFIX = "//PHPKG ";
@@ -398,7 +398,6 @@ class PackageLoader {
 	 *
 	 * @return void
 	 */
-	#[NoReturn]
 	private function parseError(int $line,string $pattern, mixed ...$args):void {
 		\UserlandPackages::parseError("Invalid PHPKG; ".$pattern, $this->pkgPath, $line, ...$args);
 		exit(1);
