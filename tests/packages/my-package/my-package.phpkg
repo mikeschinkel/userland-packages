@@ -4,7 +4,7 @@ PHPKG file={"name":"example.php","size":332}
 <?php
 declare( strict_types=1 );
 
-namespace FileOnly_16530 {
+namespace FileOnly_49880 {
 	class Baz {
 		function hello(): void {
 			echo "Yo Dawg!\n";
@@ -13,7 +13,7 @@ namespace FileOnly_16530 {
 }
 
 namespace {
-	use FileOnly_16530\Baz;
+	use FileOnly_49880\Baz;
 	class Foo {
 		public Baz $prop;
 		public function __construct() {
@@ -27,7 +27,7 @@ namespace {
 PHPKG file={"name":"index.php","size":167}
 <?php
 
-use PackageOnly_16215\MyClass;
+use PackageOnly_22988\MyClass;
 
 function main() {
 	echo "We are starting here.\n";
@@ -41,18 +41,18 @@ function main() {
 PHPKG file={"name":"lib.php","size":189}
 <?php
 
-namespace PackageOnly_16215 {
+namespace PackageOnly_22988 {
 	class MyClass {
 		public $prop = "MyProp!\n";
 	}
 }
 
 
-namespace FileOnly_54149 {
+namespace FileOnly_84608 {
 	class Baz {
 		function hello(): void {
 			echo "Yo Dawg!\n";
 		}
 	}
 }
-PHPKG checksum=f7e89f00ef2004f4e224343607f2cfeabd336492
+PHPKG checksum=b47d88e867ec264d504904536d774bdf6c386bf8
