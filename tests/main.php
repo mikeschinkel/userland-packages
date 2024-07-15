@@ -1,15 +1,22 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 require __DIR__ . '/../src/UserlandPackages/Autoloader.php';
 
-UserlandPackages::setDefaultOptions(new \UserlandPackages\Options(
-	useTmpDir: false,
+use UserlandPackages\Options;
+use UserlandPackages\PackageType;
+
+UserlandPackages::setDefaultOptions(new Options(
+	packageType:PackageType::PHAR,
 	usePackageFile: true,
 	allowDiskWrite: true,
 	allowPackageGen: true,
 	allowBackup: true,
+	typePriority: [
+		PackageType::PHAR,
+		PackageType::PHPKG,
+		PackageType::PHP,
+	]
+
 ));
 
 //include("phpkg://packages/foo/bar/baz/");
