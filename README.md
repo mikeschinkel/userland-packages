@@ -244,7 +244,7 @@ One of the most useful places to use Userland Packages with for when building pl
 
 However, if the dependency is made available as a Userland Package than this concern can be made irrelevant.
 
-It is true that — _currently_ – such dependencies would need to be written to be used as a Userland Package and that existing libraries without Userland Packages visibility scoping mechanisms can not be loaded without first modifying their source code. 
+It is true that — _currently_ – such dependencies would need to be written to be used as a Userland Package and that existing libraries without Userland Packages visibility scoping mechanisms can not be loaded without first modifying their source code. 
 
 However, **as the goal of Userland Packages is to engineer its own demise** and convince those who vote on PHP RFCs that they should incorporate the concept of single-directory packages into PHP. 
 
