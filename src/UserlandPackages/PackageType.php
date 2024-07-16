@@ -32,5 +32,19 @@ enum PackageType:string {
 		return Filepath::join($path,sprintf("%s.%s",basename($path),$this->value));
 	}
 
+	public function dispenseFormatObject():FormatInterface {
+		$object = PackageFormatObjects::get($this->value);
+		if (is_null($object)) {
+			$className = sprintf('%s\\%sFormat',
+				\UserlandPackages::class,
+				ucfirst($this->value)
+			);
+			if (!class_exists($className)) {
+				throw new \Exception("{$className} does not exist");
+			}
+			$object = new $className();
+			PackageFormatObjects::set($this->value,$object);
+		}
+		return $object;
+	}
 }
-

@@ -29,7 +29,7 @@ class FileStream {
 		if (is_resource($this->handle)) {
 			throw new \Exception("Not a resource: {$this->handle}!");
 		}
-		$this->handle = PackageLoader::getHandle($this->handle);
+		$this->handle = Handles::getHandle( $this->handle );
 		$opened_path = (string)($url["path"]??'');
 		$opened_path = substr($opened_path,1);
 		if ($opened_path==='') {

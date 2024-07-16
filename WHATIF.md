@@ -11,3 +11,4 @@
    - `get_declared_classes()`
    - `get_declared_interfaces()`
    - `get_declared_traits()`
+7. Allow `stream_filter_append()` to filter `include*()` and `require()`

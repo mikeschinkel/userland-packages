@@ -244,8 +244,7 @@ class FileParser {
 	 */
 	#[NoReturn]
 	private function parseError(string $pattern, mixed ...$args):void {
-		\UserlandPackages::parseError($pattern, $this->filepath, $this->token()->line, ...$args);
-		exit(1);
+		parseError($pattern, $this->filepath, $this->token()->line, ...$args);
 	}
 
 }
