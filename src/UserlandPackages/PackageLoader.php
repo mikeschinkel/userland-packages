@@ -216,12 +216,12 @@ class PackageLoader {
 			switch ( $type ) {
 				case PackageType::PHPKG:
 				case PackageType::PHAR:
+				case PackageType::ZIP:
 					$object = $type->dispenseFormatObject();
 					$object->generatePackage( $this, $options );
 					$pkgType = $type;
 					break 2;
 				case PackageType::APCU:
-				case PackageType::ZIP:
 				case PackageType::TAR:
 				case PackageType::PHP:
 					break;

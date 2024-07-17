@@ -3,7 +3,7 @@
 1. ~~Checksum for `.phpkg` packages~~
 2. ~~`FormatInterface` interface~~
 3. ~~Implement `FormatInterface` with `.phar`,`.phpkg`,`.zip`, and `.tar`~~  
-4. `.zip` packages
+4. ~~`.zip` packages~~
 5. `.tar` packages
 6. Alternate dir
 7. APCu support
@@ -13,3 +13,4 @@
 11. Add logic to test if .PHAR can be generated 
     - `phar.readonly` must be `0` in `php.ini`
 12. Lockfile `.phplk` for `.phpkg` packages
+13. Require package names to be `A-Z0-9_` only

@@ -51,6 +51,8 @@ class Options {
 
 		private bool $allowBackup = false,
 
+		private bool $verifyChecksum = true,
+
 		private ?int $retainBackupDays = null,
 
 		/**
@@ -88,12 +90,16 @@ class Options {
 	}
 
 	public
-	function hasPackageType(): bool {
-		return ! is_null( $this->packageType );
+	function hasPackageType(PackageType $type=null): bool {
+		return !is_null( $this->packageType );
 	}
 
 	public function getPackageType(): ?object {
 		return $this->packageType;
+	}
+
+	public function verifyChecksum(): bool {
+		return $this->verifyChecksum;
 	}
 
 	public function allowPackageGen(): bool {

@@ -6,7 +6,7 @@ use UserlandPackages\Options;
 use UserlandPackages\PackageType;
 
 UserlandPackages::setDefaultOptions(new Options(
-	packageType:PackageType::PHPKG,
+	packageType:PackageType::ZIP,
 	usePackageFile: true,
 	allowDiskWrite: true,
 	allowPackageGen: true,
@@ -14,6 +14,7 @@ UserlandPackages::setDefaultOptions(new Options(
 	typePriority: [
 		PackageType::PHAR,
 		PackageType::PHPKG,
+		PackageType::ZIP,
 		PackageType::PHP,
 	]
 

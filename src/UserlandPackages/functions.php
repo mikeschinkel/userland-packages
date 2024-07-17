@@ -2,6 +2,8 @@
 
 namespace UserlandPackages;
 
+use JetBrains\PhpStorm\NoReturn;
+
 /**
  * @param string $pattern
  * @param string $filepath
@@ -10,10 +12,14 @@ namespace UserlandPackages;
  *
  * @return void
  */
+#[NoReturn]
 function parseError(string $pattern, string $filepath, int $lineNo, ...$args):void {
-	$pattern = "UserlandPackages Parse Error: {$pattern} in %s on line %d";
+	$pattern = "UserlandPackages Parse Error: {$pattern} in %s";
 	$args[] = $filepath;
-	$args[] = $lineNo;
+	if ($lineNo !== 0) {
+		$args[] = $lineNo;
+		$pattern .= " on line %d";
+	}
 	fprintf( STDOUT, $pattern,...$args);
 	exit(1);
 }

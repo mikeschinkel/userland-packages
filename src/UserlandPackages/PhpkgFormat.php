@@ -21,7 +21,7 @@ class PhpkgFormat implements FormatInterface {
 		$fileContents = $loader->loadPackageFiles( $loader->pkgPath );
 		$manifest     = (object) [ 'files' => [] ];
 		$sizes        = [];
-		$checkSummer = new CheckSum();;
+		$checkSummer = new CheckSum();
 
 		// Create a minimal manifest with positions==0 so we can determine how long the
 		// manifest is as a string ignoring the lengths of the position values.
@@ -46,7 +46,7 @@ class PhpkgFormat implements FormatInterface {
 		$code = null;
 		$manifest = json_encode( $manifest );
 		$manifest = self::HEADER . $manifest;
-		$checkSummer->prepend($manifest);
+		$checkSummer->prepend( $manifest );
 		$package = sprintf( "%s\n%s",
 			$manifest,
 			implode( '', $fileContents ),
@@ -102,7 +102,10 @@ class PhpkgFormat implements FormatInterface {
 				$pkgFilepath
 			);
 		}
-		$checksummer = new Checksum(rtrim( PhpkgFormat::MARKER . $manifest));
+		$verifyChecksum = $options->verifyChecksum();
+		if ($verifyChecksum) {
+			$checkSummer = new Checksum( rtrim( PhpkgFormat::MARKER . $manifest ) );
+		}
 		$manifest        = substr( $manifest, strlen( PhpkgFormat::MANIFEST_PREFIX ) );
 		$decodedManifest = json_decode( $manifest );
 		if ( ! is_object( $decodedManifest ) || ! is_array( $decodedManifest->files ) ) {
@@ -131,20 +134,24 @@ class PhpkgFormat implements FormatInterface {
 				$loader->parseError( $line, "mismatch in manifest and file header of %s of %s.", $filename, $pkgFilepath );
 			}
 			$code = fread( $pkgHandle, $file->size );
-			$checksummer->append($fileHeader.$code);
+			if ($verifyChecksum) {
+				$checkSummer->append( $fileHeader . $code );
+			}
 			$handle = memWrite( $code );
 			Handles::setHandle( $handle );
 			$loader->loadPhpFile( $filepath, $handle );
 			Handles::releaseHandle( $handle );
 			$line += substr_count( $code, "\n" );
 		}
-		$checksum = fread( $pkgHandle, strlen( PhpkgFormat::CHECKSUM_PREFIX ) + 40 );
-		if ($checksum===false){
-			throw new \Exception("Unable to read from {$pkgFilepath}.");
-		}
-		$checksum = substr($checksum,strlen( PhpkgFormat::CHECKSUM_PREFIX ));
-		if ( $checksum != $checksummer->getSum() ) {
-			$loader->parseError( $line, "mismatch in checksum of %s.", $pkgFilepath );
+		if ($verifyChecksum) {
+			$checksum = fread( $pkgHandle, strlen( PhpkgFormat::CHECKSUM_PREFIX ) + 40 );
+			if ( $checksum === false ) {
+				throw new \Exception( "Unable to read from {$pkgFilepath}." );
+			}
+			$checksum = substr( $checksum, strlen( PhpkgFormat::CHECKSUM_PREFIX ) );
+			if ( $checksum != $checkSummer->getSum() ) {
+				$loader->parseError( $line, "mismatch in checksum of %s.", $pkgFilepath );
+			}
 		}
 		return $pkgFilepath;
 	}
