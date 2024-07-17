@@ -4,11 +4,11 @@ declare( strict_types=1 );
 
 namespace {
 
-	use UserlandPackages\Filepath;
-	use UserlandPackages\Options;
-	use UserlandPackages\Replacer;
-	use UserlandPackages\PackageStream;
-	use UserlandPackages\FileStream;
+	use Userland\Packages\Filepath;
+	use Userland\Packages\Options;
+	use Userland\Packages\Replacer;
+	use Userland\Packages\PackageStream;
+	use Userland\Packages\FileStream;
 
 	class UserlandPackages {
 		/**
@@ -65,7 +65,7 @@ namespace {
 		 * @return void
 		 */
 		public static function parseError(string $pattern, string $filepath, int $lineNo, ...$args):void {
-			$pattern = "UserlandPackages Parse Error: {$pattern} in %s on line %d";
+			$pattern = "Userland\Packages Parse Error: {$pattern} in %s on line %d";
 			$args[] = $filepath;
 			$args[] = $lineNo;
 			fprintf( STDOUT, $pattern,...$args);

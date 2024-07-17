@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 use JetBrains\PhpStorm\NoReturn;
 
@@ -14,7 +14,7 @@ use JetBrains\PhpStorm\NoReturn;
  */
 #[NoReturn]
 function parseError(string $pattern, string $filepath, int $lineNo, ...$args):void {
-	$pattern = "UserlandPackages Parse Error: {$pattern} in %s";
+	$pattern = "Userland\Packages Parse Error: {$pattern} in %s";
 	$args[] = $filepath;
 	if ($lineNo !== 0) {
 		$args[] = $lineNo;

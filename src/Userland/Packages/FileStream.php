@@ -1,6 +1,6 @@
 <?php
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 class FileStream {
 	const string PROTOCOL = 'phpkg-file';
 

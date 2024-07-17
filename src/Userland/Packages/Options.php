@@ -1,6 +1,6 @@
 <?php
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 class Options {
 	public const int RETAIN_BACKUP_DAYS = 30;
 

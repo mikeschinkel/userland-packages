@@ -1,6 +1,6 @@
 <?php
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 class PackageFormatObjects {
 	private static array $objects = [];

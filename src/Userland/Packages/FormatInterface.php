@@ -1,6 +1,6 @@
 <?php
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 interface FormatInterface {
 	public function generatePackage( PackageLoader $loader, Options $options ): string;

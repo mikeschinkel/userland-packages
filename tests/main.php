@@ -1,9 +1,9 @@
 <?php declare(strict_types=1);
 
-require __DIR__ . '/../src/UserlandPackages/Autoloader.php';
+require __DIR__ . '/../src/Userland/Autoloader.php';
 
-use UserlandPackages\Options;
-use UserlandPackages\PackageType;
+use Userland\Packages\Options;
+use Userland\Packages\PackageType;
 
 UserlandPackages::setDefaultOptions(new Options(
 	packageType:PackageType::ZIP,

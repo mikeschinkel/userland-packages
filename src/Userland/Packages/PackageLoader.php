@@ -1,7 +1,7 @@
 <?php
 declare( strict_types=1 );
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 class PackageLoader {
 
@@ -46,7 +46,7 @@ class PackageLoader {
 	}
 
 	/**
-	 * @param \UserlandPackages\PackageType $pkgType
+	 * @param PackageType $pkgType
 	 * @param Options $options
 	 *
 	 * @return bool

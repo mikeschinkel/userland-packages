@@ -1,6 +1,6 @@
 <?php
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 use JetBrains\PhpStorm\NoReturn;
 

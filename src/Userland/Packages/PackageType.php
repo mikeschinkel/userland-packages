@@ -1,6 +1,6 @@
 <?php
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 enum PackageType:string {
 	// PHP means no special handling. The package file is just a (collections of) PHP file(s) in a directory.
@@ -35,8 +35,8 @@ enum PackageType:string {
 	public function dispenseFormatObject():FormatInterface {
 		$object = PackageFormatObjects::get($this->value);
 		if (is_null($object)) {
-			$className = sprintf('%s\\%sFormat',
-				\UserlandPackages::class,
+			$className = sprintf('\\%s\\%sFormat',
+				substr(Packages::class,0,strrpos(Packages::class,'\\')),
 				ucfirst($this->value)
 			);
 			if (!class_exists($className)) {

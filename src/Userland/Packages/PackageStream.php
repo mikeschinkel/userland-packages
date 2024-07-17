@@ -1,6 +1,6 @@
 <?php
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 class PackageStream {
 	const string PROTOCOL = "phpkg";

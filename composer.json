@@ -15,10 +15,10 @@
 	},
 	"autoload": {
 		"psr-4": {
-			"UserlandPackages\\": "src/UserlandPackages"
+			"Userland\\": "src/Userland"
 		},
 		"files": [
-			"src/UserlandPackages/Autoloader.php"
+			"src/Userland/Autoloader.php"
 		]
 	},
 	"autoload-dev": {

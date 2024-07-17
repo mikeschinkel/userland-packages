@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 class PharFormat implements FormatInterface {
 

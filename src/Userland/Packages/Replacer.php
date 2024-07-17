@@ -1,6 +1,6 @@
 <?php
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 class Replacer {
 	const string FILE_ONLY = 'FileOnly';

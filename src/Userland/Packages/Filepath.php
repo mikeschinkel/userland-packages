@@ -1,6 +1,6 @@
 <?php
 
-namespace UserlandPackages;
+namespace Userland\Packages;
 
 class Filepath{
 	const DS = DIRECTORY_SEPARATOR;
